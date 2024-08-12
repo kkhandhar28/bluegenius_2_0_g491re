@@ -23,32 +23,31 @@
 volatile LIN_DetectNodeTask linDetectNodeState = LIN_IDLE_STATE;
 uint8_t g_numActiveLinNodes;
 uint8_t g_linId;
-uint8_t g_linTXLength;
-uint8_t g_linRxLength;
+volatile uint8_t g_linTXLength;
+volatile uint8_t g_linRxLength;
 uint8_t g_getVersionData = 0;
-uint8_t g_refreshDone = 0 ;
 LIN_NodeTypes g_nodeType;
 
 
 uint8_t ActiveLINNodes[MAX_ACTIVE_LINNODES][18] =
 {
 	//   LINID, NODE_TYPE, BL_VER, BL_STATUS, APP_VER, ONLINE_STATUS, NODE_STATUS, INPUTS1, INPUTS2, OUTPUTS1, OUTPUTS2, SENSOR1H, SENSOR1L, SENSOR2H, SENSOR2L, SPARE
-	{   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 };
 
 
@@ -67,8 +66,9 @@ uint8_t ActiveLINNodes[MAX_ACTIVE_LINNODES][18] =
  * ucErrCode - 0 for successful operation
  * 			 - 1 for operation failure
  *********************************************************************/
-uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType) {
+uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType , uint8_t * nodeDetectedIndex) {
 	uint8_t ucCalcdChksum, ucErrCode = 0;
+	uint8_t refreshStatus;
 	static uint8_t linInit = 1;
 	switch (linDetectNodeState) {
 	case LIN_IDLE_STATE:
@@ -83,7 +83,7 @@ uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType) {
 		break;
 
 	case LIN_SENDING_STATE:
-		HAL_LIN_SendBreak(&huart5);
+		HAL_LIN_SendBreak(&huart1);
 		ucErrCode = uart_transmit_data(1,&lin_out[LINCMD_SYNC] , g_linTXLength);
 		set_timeout(UART_LIN_TX_TIMEOUT, 50);
 		linDetectNodeState = LIN_SENDING_WAIT_STATE;
@@ -116,12 +116,15 @@ uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType) {
 				g_getVersionData = 1;
 				ucErrCode = LIN_ERROR_CHECKSUM;
 				linDetectNodeState = LIN_SEND_STATE;
-			} else {
+			} else if(g_numActiveLinNodes == MAX_ACTIVE_LINNODES){
+				g_getVersionData = 1;
+				ucErrCode = LIN_ERROR_MAXACTIVENODES;
+				linDetectNodeState = LIN_SEND_STATE;
+			}else {
 				ucErrCode = 0;
-				lin_save_versionnodedata(&lin_in[LINRESP_ID],nodeType);
+				lin_save_versionnodedata(&lin_in[LINRESP_ID],nodeType,nodeDetectedIndex);
 				linDetectNodeState = LIN_RECEIVE_COMPLETE_STATE;
 			}
-			set_timeout(UART_LIN_TX_TIMEOUT, 10);
 		} else if (get_timeout(UART_LIN_RX_TIMEOUT) == 0) { //wait 10 ms for detecting node
 			g_getVersionData = 1;
 			ucErrCode = 2; //receive failed //no node detected
@@ -130,10 +133,9 @@ uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType) {
 		break;
 
 	case LIN_RECEIVE_COMPLETE_STATE:
-		lin_refresh_node(g_numActiveLinNodes);
-		if(g_refreshDone == 1)
+		refreshStatus = lin_refresh_node(1);
+		if(refreshStatus == 1)
 		{
-			g_refreshDone = 0;
 			g_getVersionData = 1;
 			linDetectNodeState = LIN_SEND_STATE;
 		}
@@ -173,7 +175,8 @@ uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType) {
 uint8_t lin_refresh_node(uint8_t NodeIndex) {
 
 	uint8_t ucCalcdChksum;
-	uint8_t ucErrCode = 0;
+	uint8_t ucErrCode;
+	uint8_t refreshDone = 0 ;
 	static uint8_t lin_refresh_complete_count = 0;
 	static LIN_RefreshNodeTask linRestreshCurrentState = LIN_REFRESH_INIT_STATE;
 
@@ -182,11 +185,11 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
 	case LIN_REFRESH_INIT_STATE:
 			g_nodeType = ActiveLINNodes[NodeIndex][LNPARAM_NODE_TYPE];
 			g_linId = ActiveLINNodes[NodeIndex][LNPARAM_LINID];
+
+
 			if (g_nodeType != LNT_UNKNOWN) {
 				linRestreshCurrentState = LIN_REFRESH_SEND_STATE;
 			} else {
-				g_refreshDone =  1;
-				linRestreshCurrentState = LIN_REFRESH_INIT_STATE;
 				//dont need to proceed for lin transfer
 			}
 		break;
@@ -209,11 +212,11 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
 		{
 			g_uartTransmitComplete = 0;
 			uart_enable_receiver(UART_LIN_MODE);
-			set_timeout(UART_LIN_RX_TIMEOUT, 10);
+			set_timeout(UART_LIN_RX_TIMEOUT, 50);
 			linRestreshCurrentState = LIN_REFRESH_RECEIVE_STATE;
 		}else if (get_timeout(UART_LIN_TX_TIMEOUT) == 0) {
-			g_refreshDone =  1;
-			ucErrCode = 1; //transmit data failed
+			refreshDone =  1;
+			lin_refresh_complete_count = 0;
 			linRestreshCurrentState = LIN_REFRESH_INIT_STATE; //transmit data timeout, reset state to initial
 		}
 		break;
@@ -244,9 +247,11 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
 			}
 			linRestreshCurrentState = LIN_REFRESH_RECEIVE_COMPLETE_STATE;
 		} else if (get_timeout(UART_LIN_RX_TIMEOUT) == 0) {
-			g_refreshDone =  1;
-			ucErrCode = 2; //receive data timeout
-			linRestreshCurrentState = LIN_REFRESH_INIT_STATE; // reset state to initial //changed from last code //kk
+			refreshDone =  1;
+			ucErrCode = 1; //receive data timeout
+			//linRestreshCurrentState = LIN_SENDING_WAIT_STATE; // reset state to initial //kh
+			lin_refresh_complete_count = 0;
+			linRestreshCurrentState = LIN_REFRESH_INIT_STATE;
 			set_timeout(UART_LIN_TX_TIMEOUT, 50);
 		}
 		break;
@@ -268,13 +273,13 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
 		}
 
 		if (lin_refresh_complete_count == 3) {
-			g_refreshDone =  1;
+			refreshDone =  1;
 			lin_refresh_complete_count = 0; // lin transmission complete
 			linRestreshCurrentState = LIN_REFRESH_INIT_STATE; //reset state to initial
 		}
 		break;
 	}
-	return ucErrCode;
+	return refreshDone;
 }
 /********************************************************************
  * Function Name : lin_save_versionnodedata
@@ -291,8 +296,10 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
  * NONE
  *
  *********************************************************************/
-void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType) {
-	g_numActiveLinNodes++;
+void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType, uint8_t * nodeDetectedIndex) {
+	//g_numActiveLinNodes++;
+	g_numActiveLinNodes = 1;
+	*nodeDetectedIndex = g_numActiveLinNodes;
 	ActiveLINNodes[g_numActiveLinNodes][LNPARAM_LINID] = linbuf[LINRESP_ID];
 	ActiveLINNodes[g_numActiveLinNodes][LNPARAM_NODE_TYPE] = nodeType;
 	ActiveLINNodes[g_numActiveLinNodes][LNPARAM_BL_VER] =
@@ -441,6 +448,7 @@ void linnode_setget(uint8_t NodeIndex) {
 	lin_out[LINCMD_PARAM1] = ucDataOut;
 	ucCalcdChksum = lin_checksum(&lin_out[LINCMD_ID], 3); //checksum of data including ID
 	lin_out[LINCMD_CHK_1PARAMS] = ucCalcdChksum;
+	lin_in[LINRESP_ID] = ucLINID;
 	HAL_UART_Receive_IT(&huart1, &lin_in[1], g_linRxLength);
 }
 
@@ -466,6 +474,9 @@ void linnode_getangles(uint8_t NodeIndex) {
 
 	ucLINID = ActiveLINNodes[NodeIndex][LNPARAM_LINID];
 
+
+	ucLINID = LINID_VLPPK;
+
 	g_linRxLength = 5;
 	g_linTXLength = 4;
 	lin_out[LINCMD_SYNC] = LIN_SYNC;
@@ -473,6 +484,7 @@ void linnode_getangles(uint8_t NodeIndex) {
 	lin_out[LINCMD_COMMAND] = LINCOMMAND_GETANGLES;
 	ucCalcdChksum = lin_checksum(&lin_out[LINCMD_ID], 3); //checksum of data including ID
 	lin_out[LINCMD_CHK_NOPARAMS] = ucCalcdChksum;
+	lin_in[LINRESP_ID] = ucLINID;
 	HAL_UART_Receive_IT(&huart1, &lin_in[1], g_linRxLength);
 }
 
@@ -497,7 +509,8 @@ void linnode_getanalog(uint8_t NodeIndex) {
 	uint8_t ucLINID;
 
 	ucLINID = ActiveLINNodes[NodeIndex][LNPARAM_LINID];
-	ucLINID = 0x47;
+	ucLINID = LINID_VLPPK;
+
 
 	g_linRxLength = 3;
 	g_linTXLength = 4;
@@ -506,6 +519,7 @@ void linnode_getanalog(uint8_t NodeIndex) {
 	lin_out[LINCMD_COMMAND] = LINCOMMAND_GETANALOG;
 	ucCalcdChksum = lin_checksum(&lin_out[LINCMD_ID], 3); //checksum of data including ID
 	lin_out[LINCMD_CHK_NOPARAMS] = ucCalcdChksum;
+	lin_in[LINRESP_ID] = ucLINID;
 	HAL_UART_Receive_IT(&huart1, &lin_in[1], g_linRxLength);
 }
 
@@ -569,32 +583,4 @@ uint8_t lin_checksum(uint8_t *array, uint8_t length) {
 	uiCheckSum = (uiCheckSum & 0xFF);
 
 	return (uint8_t) uiCheckSum;
-}
-
-/********************************************************************
- * Function Name: linnode_getdata
- *
- * Description:
- * This function returns LIN data based on the specified node index
- * and parameter.
- *
- * Parameters:
- *   - NodeIndex: The index of the LIN node to retrieve data from.
- *   - Param: The specific parameter to retrieve from the LIN node.
- *
- * Return Value:
- *   - The value of the specified parameter for the given node index.
- *   - If the NodeIndex is out of bounds, the return value is undefined.
- *
- *********************************************************************/
-uint8_t linnode_getdata(uint8_t NodeIndex, uint8_t Param)
-{
-	uint8_t result;
-
-	if(NodeIndex < g_numActiveLinNodes)
-	{
-		result = ActiveLINNodes[NodeIndex][Param];
-	}
-
-	return result;
 }

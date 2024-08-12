@@ -142,13 +142,13 @@ extern uint8_t lin_out[15];
 extern uint8_t g_numActiveLinNodes;
 extern uint8_t g_getVersionData;
 extern uint8_t g_refreshDone;
-extern uint8_t g_linTXLength;
-extern uint8_t g_linRxLength;
+extern volatile uint8_t g_linTXLength;
+extern volatile uint8_t g_linRxLength;
 
 
-uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType);
+uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType, uint8_t * nodeDetectedIndex);
 uint8_t lin_refresh_node(uint8_t NodeIndex);
-void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType);
+void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType, uint8_t * nodeDetectedIndex);
 void lin_save_setgetdata(uint8_t *linbuf, LIN_NodeTypes nodeType,
 		uint8_t nodeIndex);
 void lin_save_angledata(uint8_t *linbuf, LIN_NodeTypes nodeType,

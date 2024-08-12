@@ -16,7 +16,7 @@ uint8_t g_uartReceiveComplete;
 uint8_t g_uartTransmitComplete;
 
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
-	if (huart->Instance == UART5) {
+	if (huart->Instance == USART1) {
 		g_uartTransmitComplete = 1;
 	}
 }
@@ -34,7 +34,7 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *huart) {
  *********************************************************************/
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	if (huart->Instance == UART5) {
+	if (huart->Instance == USART1) {
 		g_uartReceiveComplete = 1;
 	}
 }
@@ -42,7 +42,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
 uint8_t uart_transmit_data(uint8_t uartMode, uint8_t *uartBuf, uint8_t length) {
 	uint8_t errCode = 0;
 	if (uartMode == UART_LIN_MODE) {
-		errCode = HAL_UART_Transmit_IT(&huart5, uartBuf, length);
+		errCode = HAL_UART_Transmit_IT(&huart1, uartBuf, length);
 	}
 
 	return errCode;
