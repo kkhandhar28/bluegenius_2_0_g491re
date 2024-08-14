@@ -8,6 +8,9 @@
 #ifndef SRC_INCLUDE_LINREFRESH_H_
 #define SRC_INCLUDE_LINREFRESH_H_
 
+/********************************************************************
+*   Function Prototypes
+*********************************************************************/
 void lin_refresh(void);
 
 #endif /* SRC_INCLUDE_LINREFRESH_H_ */

@@ -8,6 +8,9 @@
 #ifndef SRC_INCLUDE_CONTROLSTATEMACHINE_H_
 #define SRC_INCLUDE_CONTROLSTATEMACHINE_H_
 
+/*******************************************************************************
+*   System States
+*******************************************************************************/
 typedef enum{
 	SS_STARTING_STATE_CHECK = 0,
 	SS_RESTR_FAULT_CHECK,
@@ -32,6 +35,9 @@ typedef enum{
 	SS_DECK_DEPLOYED,
 }SYSYEM_CONTROL_STATE_TYPE;
 
+/*******************************************************************************
+*   Function Prototypes
+*******************************************************************************/
 void system_fsm();
 
 #endif /* SRC_INCLUDE_CONTROLSTATEMACHINE_H_ */

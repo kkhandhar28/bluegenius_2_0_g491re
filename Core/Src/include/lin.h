@@ -8,6 +8,9 @@
 #ifndef SRC_INCLUDE_LIN_H_
 #define SRC_INCLUDE_LIN_H_
 
+/********************************************************************
+ * Enumeration for LIN Node Task States
+ *********************************************************************/
 typedef enum{
 	LIN_IDLE_STATE = 0,
 	LIN_SEND_STATE ,
@@ -18,21 +21,32 @@ typedef enum{
 	LIN_WAIT_STATE,
 }LIN_DetectNodeTask;
 
+
+/********************************************************************
+ * Enumeration for LIN Node Type
+ *********************************************************************/
 typedef enum
 {
 	LNT_UNKNOWN			= 0,
-	LNT_POWER			= 1,
-	LNT_RESTRAINT 		= 2,
-	LNT_LEVELER 		= 3,
-	LNT_RESTRAINT_PPK	= 4,
-	LNT_LEVELER_PPK		= 5,
-	LNT_COMBO_PPK		= 6,
-	LNT_TILTSENSOR		= 7,
-	LNT_DISTANCESENSOR	= 8,
-	LNT_INTTRAFFICLIGHT	= 9,
-	LNT_EXTTRAFFICLIGHT	= 10
+	LNT_POWER			= 1,    //Power control
+	LNT_RESTRAINT 		= 2,    //TL85,
+	LNT_LEVELER 		= 3,    //FH, XDS
+	LNT_RESTRAINT_PPK	= 4,    //TL85
+	LNT_LEVELER_PPK		= 5,    //FH, XDS, VDOCK
+	LNT_COMBO_PPK		= 6,    //FH+XDS, FH+SVR
+    LNT_SC_RESTRAINT    = 7,    //TL85SC
+    LNT_HVR_RESTRAINT   = 8,    //HVR
+    LNT_CHOCK_RESTRAINT = 9,    //CHOCK
+    LNT_POSITION_SENSOR = 10,   //SVR
+	LNT_TILTSENSOR		= 11,   //AUTORETURN, XDS(guard)
+	LNT_DISTANCESENSOR	= 12,   //(future)
+	LNT_INTTRAFFICLIGHT	= 13,   //Corner lights
+	LNT_EXTTRAFFICLIGHT	= 14    //Traffic light w/Alarm
 }LIN_NodeTypes;
 
+/********************************************************************
+ * Enumeration for LIN Node Refresh Task
+ *********************************************************************/
 typedef enum
 {
 	LIN_REFRESH_INIT_STATE,
@@ -44,15 +58,17 @@ typedef enum
 
 }LIN_RefreshNodeTask;
 
-
-extern uint8_t lin_in[15];
-extern uint8_t lin_out[15];
-
-#define MAX_ACTIVE_LINNODES 16
+/********************************************************************
+ * LIN ACTIVE NODE ASSIGNMENT
+ *********************************************************************/
+#define MAX_ACTIVE_LINNODES 22
 
 #define PCU_NODE_INDEX  1
 
-//-----LIN PARAMETER CONSTANTS--------------
+
+/********************************************************************
+ * LIN PARAMETER CONSTANTS
+ *********************************************************************/
 #define LNPARAM_LINID 			0
 #define LNPARAM_NODE_TYPE		1
 #define LNPARAM_BL_VER			2
@@ -77,7 +93,10 @@ extern uint8_t lin_out[15];
 #define LIN_ERROR_NODENOTFOUND		0x82
 #define LIN_ERROR_FIRSTCHAR			0x40
 
-//-----COMMAND IDs--------------------------
+
+/********************************************************************
+ * LIN COMMAND IDs
+ *********************************************************************/
 #define LINCOMMAND_GETVERSION		'v'
 #define LINCOMMAND_ENTERBOOTLOADER	'b'
 #define LINCOMMAND_SETCONFIG		'c'
@@ -87,7 +106,10 @@ extern uint8_t lin_out[15];
 #define LINCOMMAND_GETANGLES		'a'
 #define LINCOMMAND_GETANALOG		'A'
 
-//-----COMMANDS-----------------------------
+
+/********************************************************************
+ * LIN COMMANDS
+ *********************************************************************/
 #define LINCMD_SYNC		0
 #define LINCMD_ID		1
 #define LINCMD_COMMAND	2
@@ -97,7 +119,10 @@ extern uint8_t lin_out[15];
 #define LINCMD_CHK_1PARAMS	4
 #define LINCMD_CHK_NOPARAMS	3
 
-//-----RESPONSES----------------------------
+
+/********************************************************************
+ * LIN RESPONSES
+ *********************************************************************/
 #define LINRESP_ID			0
 #define LINRESP_BLVERSION	1		//Get Version
 #define LINRESP_BLSTATUS	2
@@ -138,7 +163,11 @@ extern uint8_t lin_out[15];
 
 #define LIN_SYNC	0x55
 
-
+/********************************************************************
+*   Extern Global Variables
+*********************************************************************/
+extern uint8_t lin_in[15];
+extern uint8_t lin_out[15];
 extern uint8_t g_numActiveLinNodes;
 extern uint8_t g_getVersionData;
 extern uint8_t g_refreshDone;
@@ -146,9 +175,12 @@ extern volatile uint8_t g_linTXLength;
 extern volatile uint8_t g_linRxLength;
 
 
-uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType, uint8_t * nodeDetectedIndex);
+/********************************************************************
+*   Function Prototypes
+*********************************************************************/
+uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType);
 uint8_t lin_refresh_node(uint8_t NodeIndex);
-void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType, uint8_t * nodeDetectedIndex);
+void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType);
 void lin_save_setgetdata(uint8_t *linbuf, LIN_NodeTypes nodeType,
 		uint8_t nodeIndex);
 void lin_save_angledata(uint8_t *linbuf, LIN_NodeTypes nodeType,

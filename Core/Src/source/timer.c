@@ -4,12 +4,17 @@
  *  Created on: Mar 27, 2024
  *      Author: kkhandhar
  */
-//Include files
+
+/*******************************************************************************
+ * Included headers
+ *******************************************************************************/
 #include "timer.h"
 #include "main.h"
 
 
-//global variables
+/********************************************************************
+ * Global Variables
+ ********************************************************************/
 volatile uint64_t Millisecond_Tick = 0;
 volatile uint32_t gui_uartTxTimeoutMs;
 volatile uint32_t gui_uartRxTimeoutMs;
@@ -19,6 +24,18 @@ volatile uint32_t gui_linRefreshtimeoutMs;
 volatile uint32_t gpt_timer_ms_1;
 volatile uint32_t i2c_timeout;
 
+
+/***********************************************************************
+* Function Name: set_timeout
+*
+*  Description: Sets the timeout interval for various system timers
+*  based on the selected timeout type.
+*
+*  Parameters: selector - The timeout to be configured.
+*
+*  Return : None
+*
+***********************************************************************/
 void set_timeout(sysTimeout selector , uint32_t timeout_interval){
 	switch(selector)
 	{
@@ -51,6 +68,17 @@ void set_timeout(sysTimeout selector , uint32_t timeout_interval){
 	}
 }
 
+/***********************************************************************
+* Function Name: get_timeout
+*
+*  Description: Retrieves the current timeout value for the specified
+*  system timer.
+*
+*  Parameters: selector - Selected timer to retrieves its timeout.
+*
+*  Return : The timeout interval in milliseconds for the selected timer.
+*
+***********************************************************************/
 uint32_t get_timeout(sysTimeout selector)
 {
 	switch(selector)
@@ -86,7 +114,16 @@ uint32_t get_timeout(sysTimeout selector)
 return 0;
 }
 
-
+/***********************************************************************
+* Function Name: decrement_timeout
+*
+*  Description: Decrements the timeout values for various system timers.
+*
+*  Parameters: None.
+*
+*  Return : None
+*
+***********************************************************************/
 void decrement_timeout(void){
 	if(gui_uartTxTimeoutMs > 0){
 		gui_uartTxTimeoutMs--;
@@ -109,7 +146,16 @@ void decrement_timeout(void){
 	}
 }
 
-
+/***********************************************************************
+* Function Name: increment_timer
+*
+*  Description: Increments the timeout values for various system timers.
+*
+*  Parameters: None.
+*
+*  Return : None
+*
+***********************************************************************/
 void increment_timer(void)
 {
 	gpt_timer_ms_1++;

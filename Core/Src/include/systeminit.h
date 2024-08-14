@@ -8,6 +8,9 @@
 #ifndef SRC_INCLUDE_SYSTEMINIT_H_
 #define SRC_INCLUDE_SYSTEMINIT_H_
 
+/********************************************************************
+*   Function Prototypes
+*********************************************************************/
 void system_init(void);
 
 #endif /* SRC_INCLUDE_SYSTEMINIT_H_ */

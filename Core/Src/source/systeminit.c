@@ -5,11 +5,24 @@
  *      Author: kkhandhar
  */
 
+
+/*******************************************************************************
+ * Included headers
+ *******************************************************************************/
 #include "main.h"
 #include "systeminit.h"
 #include "uart.h"
 
-
+/***********************************************************************
+*  Function Name: system_init
+*
+*  Description: This function Initializes the system components.
+*
+*  Parameters: None
+*
+*  Return : None
+*
+***********************************************************************/
 void system_init(void){
 	/** SysTick Configuration **/
 	SystemCoreClockUpdate();

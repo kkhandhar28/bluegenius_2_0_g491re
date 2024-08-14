@@ -4,11 +4,17 @@
  *  Created on: Aug 8, 2024
  *      Author: kkhandhar
  */
+
+/*******************************************************************************
+ * Included headers
+ *******************************************************************************/
 #include "main.h"
 #include "controlstatemachine.h"
 #include "app.h"
 
-
+/********************************************************************
+ * Global Variables
+ ********************************************************************/
 SYSYEM_CONTROL_STATE_TYPE sysCurrentControlState = SS_STARTING_STATE_CHECK;
 SYSYEM_CONTROL_STATE_TYPE sysNextControlState;
 

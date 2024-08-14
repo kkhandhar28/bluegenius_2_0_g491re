@@ -8,6 +8,9 @@
 #ifndef SRC_LINID_H_
 #define SRC_LINID_H_
 
+/********************************************************************
+*   Lin Module Ids
+*********************************************************************/
 #define LINID_PWRCTRL	0xC1		//Power Control Module
 #define LINID_TL85RESTR	0x42		//TL85 Restraint module
 #define LINID_TL85PPK	0x43		//TL85 Powerpack module

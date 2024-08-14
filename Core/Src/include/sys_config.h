@@ -8,6 +8,9 @@
 #ifndef SRC_SYS_CONFIG_H_
 #define SRC_SYS_CONFIG_H_
 
+/********************************************************************
+*   Function Prototypes
+*********************************************************************/
 void sys_AutoConfiguration();
 uint8_t sys_detectDoorSensors(void);
 void sys_detectRestraintType(void);

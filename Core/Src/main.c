@@ -103,7 +103,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  lin_node_configure_test();
+	  lin_module_scan();
   }
   /* USER CODE END 3 */
 }

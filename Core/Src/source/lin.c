@@ -13,6 +13,9 @@
  *      Author: kkhandhar
  */
 
+/*******************************************************************************
+ * Included headers
+ *******************************************************************************/
 #include "app.h"
 #include "main.h"
 #include "lin.h"
@@ -20,6 +23,9 @@
 #include "linid.h"
 #include "timer.h"
 
+/********************************************************************
+ * Global Variables
+ ********************************************************************/
 volatile LIN_DetectNodeTask linDetectNodeState = LIN_IDLE_STATE;
 uint8_t g_numActiveLinNodes;
 uint8_t g_linId;
@@ -32,6 +38,12 @@ LIN_NodeTypes g_nodeType;
 uint8_t ActiveLINNodes[MAX_ACTIVE_LINNODES][18] =
 {
 	//   LINID, NODE_TYPE, BL_VER, BL_STATUS, APP_VER, ONLINE_STATUS, NODE_STATUS, INPUTS1, INPUTS2, OUTPUTS1, OUTPUTS2, SENSOR1H, SENSOR1L, SENSOR2H, SENSOR2L, SPARE
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
 	 {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
@@ -66,7 +78,7 @@ uint8_t ActiveLINNodes[MAX_ACTIVE_LINNODES][18] =
  * ucErrCode - 0 for successful operation
  * 			 - 1 for operation failure
  *********************************************************************/
-uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType , uint8_t * nodeDetectedIndex) {
+uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType) {
 	uint8_t ucCalcdChksum, ucErrCode = 0;
 	uint8_t refreshStatus;
 	static uint8_t linInit = 1;
@@ -78,6 +90,7 @@ uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType , uint8_t * nodeD
 		break;
 
 	case LIN_SEND_STATE:
+		uart_disable_receiver(UART_LIN_MODE);
 		linmode_getversion(linId);
 		linDetectNodeState = LIN_SENDING_STATE;
 		break;
@@ -122,18 +135,20 @@ uint8_t lin_get_version(uint8_t linId , LIN_NodeTypes nodeType , uint8_t * nodeD
 				linDetectNodeState = LIN_SEND_STATE;
 			}else {
 				ucErrCode = 0;
-				lin_save_versionnodedata(&lin_in[LINRESP_ID],nodeType,nodeDetectedIndex);
+				lin_save_versionnodedata(&lin_in[LINRESP_ID],nodeType);
 				linDetectNodeState = LIN_RECEIVE_COMPLETE_STATE;
 			}
 		} else if (get_timeout(UART_LIN_RX_TIMEOUT) == 0) { //wait 10 ms for detecting node
 			g_getVersionData = 1;
 			ucErrCode = 2; //receive failed //no node detected
-			linDetectNodeState = LIN_SEND_STATE;
+			linDetectNodeState = LIN_WAIT_STATE; //transmissin failed
+			set_timeout(UART_LIN_TX_TIMEOUT, 10);
+
 		}
 		break;
 
 	case LIN_RECEIVE_COMPLETE_STATE:
-		refreshStatus = lin_refresh_node(1);
+		refreshStatus = lin_refresh_node(g_numActiveLinNodes);
 		if(refreshStatus == 1)
 		{
 			g_getVersionData = 1;
@@ -183,6 +198,7 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
 	switch (linRestreshCurrentState) {
 
 	case LIN_REFRESH_INIT_STATE:
+		    uart_disable_receiver(UART_LIN_MODE);
 			g_nodeType = ActiveLINNodes[NodeIndex][LNPARAM_NODE_TYPE];
 			g_linId = ActiveLINNodes[NodeIndex][LNPARAM_LINID];
 
@@ -190,13 +206,13 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
 			if (g_nodeType != LNT_UNKNOWN) {
 				linRestreshCurrentState = LIN_REFRESH_SEND_STATE;
 			} else {
-				//dont need to proceed for lin transfer
+				refreshDone = 1;
 			}
 		break;
 
 	case LIN_REFRESH_SEND_STATE:
-		linnode_setget(NodeIndex);
 		uart_disable_receiver(UART_LIN_MODE);
+		linnode_setget(NodeIndex);
 		linRestreshCurrentState = LIN_REFRESH_SENDING_STATE;
 		break;
 
@@ -296,10 +312,8 @@ uint8_t lin_refresh_node(uint8_t NodeIndex) {
  * NONE
  *
  *********************************************************************/
-void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType, uint8_t * nodeDetectedIndex) {
-	//g_numActiveLinNodes++;
-	g_numActiveLinNodes = 1;
-	*nodeDetectedIndex = g_numActiveLinNodes;
+void lin_save_versionnodedata(uint8_t *linbuf , LIN_NodeTypes nodeType) {
+	g_numActiveLinNodes++;
 	ActiveLINNodes[g_numActiveLinNodes][LNPARAM_LINID] = linbuf[LINRESP_ID];
 	ActiveLINNodes[g_numActiveLinNodes][LNPARAM_NODE_TYPE] = nodeType;
 	ActiveLINNodes[g_numActiveLinNodes][LNPARAM_BL_VER] =
